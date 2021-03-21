@@ -14,4 +14,6 @@ Setup:
 | GIT-NAME | Git name |
 | GIT-BRANCH | Git branch to commit to |
 | GIT-COMMIT-MSG | Git commit msg |
-- Mount volume under the name `git`
+- Fill out volume detail named `git`
+- Change cron timing if desired (default: nightly)
+- Apply yaml to K8s cluster
