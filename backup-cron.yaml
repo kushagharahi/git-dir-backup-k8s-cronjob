@@ -1,0 +1,48 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: backup-config
+spec:
+  schedule: "0 0 * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: backup-config
+            image: alpine/git
+            imagePullPolicy: IfNotPresent
+            command: ["/bin/sh", "-c"]
+            args:
+            - eval `ssh-agent -s` ;
+              echo $(SSH-KEY-BASE64) | base64 -d | ssh-add - > /dev/null ;
+              mkdir -p ~/.ssh ;
+              ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts ;
+              git init ;
+              git remote add origin $(GIT-REPO) ;
+              git checkout -b $(GIT-BRANCH) ;
+              git pull origin $(GIT-BRANCH) ;
+              git config --global user.email $(GIT-EMAIL) ;
+              git config --global user.name $(GIT-NAME) ;
+              git add -A ;
+              git commit -m $(GIT-COMMIT-MSG) ;
+              git push origin $(GIT-BRANCH) ;
+              exit 0
+            volumeMounts:
+            - name: git
+              mountPath: /git
+            env:
+            - name: SSH-KEY-BASE64
+              value: ""
+            - name: GIT-REPO
+              value: ""
+            - name: GIT-EMAIL
+              value: ""
+            - name: GIT-NAME
+              value: ""
+            - name: GIT-BRANCH
+              value: ""
+            - name: GIT-COMMIT-MSG
+              value: ""
+          volumes:
+          - name: git
