@@ -1,5 +1,5 @@
 # git-dir-backup-k8s-cronjob
-Backup a volume to git via Kubernetes CronJob
+Backup a volume to Git via Kubernetes CronJob
 
 Setup your volume under the name `git`. This CronJob will commit everything in that volume to the specified Git server. `.gitattributes` recommended if using Git as binary storage.
 
